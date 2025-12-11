@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="DELETE /api/v1/payments/{id}" tests="2" skipped="0" failures="0" errors="0" timestamp="2025-12-11T13:49:13" hostname="Rickeys-MacBook-Pro.local" time="0.02">
+  <properties/>
+  <testcase name="should return 409 when payment cannot be cancelled" classname="com.example.payments.controller.PaymentControllerTest$CancelPaymentEndpoint" time="0.014"/>
+  <testcase name="should cancel payment and return 204" classname="com.example.payments.controller.PaymentControllerTest$CancelPaymentEndpoint" time="0.004"/>
+  <system-out><![CDATA[2025-12-11 08:49:13.528 ?[34mINFO ?[0;39m [Test worker] ?[36mo.s.t.c.s.AnnotationConfigContextLoaderUtils?[0;39m - Could not detect default configuration classes for test class [com.example.payments.controller.PaymentControllerTest$CancelPaymentEndpoint]: CancelPaymentEndpoint does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-12-11 08:49:13.533 ?[34mINFO ?[0;39m [Test worker] ?[36mo.s.b.t.c.SpringBootTestContextBootstrapper?[0;39m - Found @SpringBootConfiguration com.example.payments.PaymentsApplication for test class com.example.payments.controller.PaymentControllerTest$CancelPaymentEndpoint
+2025-12-11 08:49:13.543 ?[31mWARN ?[0;39m [Test worker] ?[36mc.e.p.e.GlobalExceptionHandler?[0;39m - Payment not modifiable
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

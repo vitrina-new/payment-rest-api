@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="GET /api/v1/payments/{id}" tests="2" skipped="0" failures="0" errors="0" timestamp="2025-12-11T13:49:13" hostname="Rickeys-MacBook-Pro.local" time="0.01">
+  <properties/>
+  <testcase name="should return 404 when payment not found" classname="com.example.payments.controller.PaymentControllerTest$GetPaymentEndpoint" time="0.005"/>
+  <testcase name="should return payment when found" classname="com.example.payments.controller.PaymentControllerTest$GetPaymentEndpoint" time="0.004"/>
+  <system-out><![CDATA[2025-12-11 08:49:13.558 ?[34mINFO ?[0;39m [Test worker] ?[36mo.s.t.c.s.AnnotationConfigContextLoaderUtils?[0;39m - Could not detect default configuration classes for test class [com.example.payments.controller.PaymentControllerTest$GetPaymentEndpoint]: GetPaymentEndpoint does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-12-11 08:49:13.562 ?[34mINFO ?[0;39m [Test worker] ?[36mo.s.b.t.c.SpringBootTestContextBootstrapper?[0;39m - Found @SpringBootConfiguration com.example.payments.PaymentsApplication for test class com.example.payments.controller.PaymentControllerTest$GetPaymentEndpoint
+2025-12-11 08:49:13.567 ?[31mWARN ?[0;39m [Test worker] ?[36mc.e.p.e.GlobalExceptionHandler?[0;39m - Payment not found
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

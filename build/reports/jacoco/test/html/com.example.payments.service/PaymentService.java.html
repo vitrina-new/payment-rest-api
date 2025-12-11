@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PaymentService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">payments-service</a> &gt; <a href="index.source.html" class="el_package">com.example.payments.service</a> &gt; <span class="el_source">PaymentService.java</span></div><h1>PaymentService.java</h1><pre class="source lang-java linenums">package com.example.payments.service;
+
+import com.example.payments.exception.PaymentException;
+import com.example.payments.model.Payment;
+import com.example.payments.model.PaymentRequest;
+import com.example.payments.model.PaymentResponse;
+import com.example.payments.repository.PaymentRepository;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
+import java.util.UUID;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
+@Service
+@Transactional
+public class PaymentService {
+
+<span class="fc" id="L27">    private static final Logger log = LoggerFactory.getLogger(PaymentService.class);</span>
+
+    private final PaymentRepository paymentRepository;
+    private final Counter paymentsCreatedCounter;
+    private final Counter paymentsProcessedSuccessCounter;
+    private final Counter paymentsProcessedFailureCounter;
+    private final Timer paymentProcessingTimer;
+
+<span class="fc" id="L35">    public PaymentService(PaymentRepository paymentRepository, MeterRegistry meterRegistry) {</span>
+<span class="fc" id="L36">        this.paymentRepository = paymentRepository;</span>
+
+<span class="fc" id="L38">        this.paymentsCreatedCounter = Counter.builder(&quot;payments.created.total&quot;)</span>
+<span class="fc" id="L39">                .description(&quot;Total number of payments created&quot;)</span>
+<span class="fc" id="L40">                .register(meterRegistry);</span>
+
+<span class="fc" id="L42">        this.paymentsProcessedSuccessCounter = Counter.builder(&quot;payments.processed.total&quot;)</span>
+<span class="fc" id="L43">                .tag(&quot;status&quot;, &quot;success&quot;)</span>
+<span class="fc" id="L44">                .description(&quot;Total number of successfully processed payments&quot;)</span>
+<span class="fc" id="L45">                .register(meterRegistry);</span>
+
+<span class="fc" id="L47">        this.paymentsProcessedFailureCounter = Counter.builder(&quot;payments.processed.total&quot;)</span>
+<span class="fc" id="L48">                .tag(&quot;status&quot;, &quot;failure&quot;)</span>
+<span class="fc" id="L49">                .description(&quot;Total number of failed payments&quot;)</span>
+<span class="fc" id="L50">                .register(meterRegistry);</span>
+
+<span class="fc" id="L52">        this.paymentProcessingTimer = Timer.builder(&quot;payments.processing.duration&quot;)</span>
+<span class="fc" id="L53">                .description(&quot;Time taken to process payments&quot;)</span>
+<span class="fc" id="L54">                .register(meterRegistry);</span>
+<span class="fc" id="L55">    }</span>
+
+    public PaymentResponse createPayment(PaymentRequest request) {
+<span class="fc" id="L58">        log.info(&quot;Creating payment&quot;,</span>
+<span class="fc" id="L59">                kv(&quot;merchantId&quot;, request.getMerchantId()),</span>
+<span class="fc" id="L60">                kv(&quot;customerId&quot;, request.getCustomerId()),</span>
+<span class="fc" id="L61">                kv(&quot;amount&quot;, request.getAmount()),</span>
+<span class="fc" id="L62">                kv(&quot;currency&quot;, request.getCurrency()));</span>
+
+<span class="fc" id="L64">        Payment payment = Payment.builder()</span>
+<span class="fc" id="L65">                .amount(request.getAmount())</span>
+<span class="fc" id="L66">                .currency(request.getCurrency().toUpperCase())</span>
+<span class="fc" id="L67">                .status(Payment.PaymentStatus.PENDING)</span>
+<span class="fc" id="L68">                .description(request.getDescription())</span>
+<span class="fc" id="L69">                .merchantId(request.getMerchantId())</span>
+<span class="fc" id="L70">                .customerId(request.getCustomerId())</span>
+<span class="fc" id="L71">                .cardLastFour(request.getCardLastFour())</span>
+<span class="fc" id="L72">                .paymentMethod(request.getPaymentMethod())</span>
+<span class="fc" id="L73">                .referenceId(request.getReferenceId())</span>
+<span class="fc" id="L74">                .build();</span>
+
+<span class="fc" id="L76">        Payment savedPayment = paymentRepository.save(payment);</span>
+<span class="fc" id="L77">        paymentsCreatedCounter.increment();</span>
+
+<span class="fc" id="L79">        log.info(&quot;Payment created successfully&quot;,</span>
+<span class="fc" id="L80">                kv(&quot;paymentId&quot;, savedPayment.getId()),</span>
+<span class="fc" id="L81">                kv(&quot;status&quot;, savedPayment.getStatus()));</span>
+
+<span class="fc" id="L83">        return PaymentResponse.fromPayment(savedPayment);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public PaymentResponse getPayment(UUID id) {
+<span class="fc" id="L88">        log.debug(&quot;Retrieving payment&quot;, kv(&quot;paymentId&quot;, id));</span>
+
+<span class="fc" id="L90">        Payment payment = paymentRepository.findById(id)</span>
+<span class="fc" id="L91">                .orElseThrow(() -&gt; new PaymentException.PaymentNotFoundException(id));</span>
+
+<span class="fc" id="L93">        return PaymentResponse.fromPayment(payment);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public Page&lt;PaymentResponse&gt; listPayments(Pageable pageable) {
+<span class="fc" id="L98">        log.debug(&quot;Listing payments&quot;, kv(&quot;page&quot;, pageable.getPageNumber()), kv(&quot;size&quot;, pageable.getPageSize()));</span>
+
+<span class="fc" id="L100">        return paymentRepository.findAll(pageable)</span>
+<span class="fc" id="L101">                .map(PaymentResponse::fromPayment);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public Page&lt;PaymentResponse&gt; listPaymentsByMerchant(String merchantId, Pageable pageable) {
+<span class="nc" id="L106">        log.debug(&quot;Listing payments for merchant&quot;,</span>
+<span class="nc" id="L107">                kv(&quot;merchantId&quot;, merchantId),</span>
+<span class="nc" id="L108">                kv(&quot;page&quot;, pageable.getPageNumber()));</span>
+
+<span class="nc" id="L110">        return paymentRepository.findByMerchantId(merchantId, pageable)</span>
+<span class="nc" id="L111">                .map(PaymentResponse::fromPayment);</span>
+    }
+
+    public PaymentResponse updatePayment(UUID id, PaymentRequest request) {
+<span class="fc" id="L115">        log.info(&quot;Updating payment&quot;, kv(&quot;paymentId&quot;, id));</span>
+
+<span class="fc" id="L117">        Payment payment = paymentRepository.findById(id)</span>
+<span class="pc" id="L118">                .orElseThrow(() -&gt; new PaymentException.PaymentNotFoundException(id));</span>
+
+<span class="pc bpc" id="L120" title="1 of 2 branches missed.">        if (payment.getStatus() == Payment.PaymentStatus.COMPLETED ||</span>
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">                payment.getStatus() == Payment.PaymentStatus.REFUNDED) {</span>
+<span class="nc" id="L122">            throw new PaymentException.PaymentNotModifiableException(id, payment.getStatus());</span>
+        }
+
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">        if (request.getAmount() != null) {</span>
+<span class="fc" id="L126">            payment.setAmount(request.getAmount());</span>
+        }
+<span class="pc bpc" id="L128" title="1 of 2 branches missed.">        if (request.getCurrency() != null) {</span>
+<span class="fc" id="L129">            payment.setCurrency(request.getCurrency().toUpperCase());</span>
+        }
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">        if (request.getDescription() != null) {</span>
+<span class="fc" id="L132">            payment.setDescription(request.getDescription());</span>
+        }
+<span class="pc bpc" id="L134" title="1 of 2 branches missed.">        if (request.getCardLastFour() != null) {</span>
+<span class="nc" id="L135">            payment.setCardLastFour(request.getCardLastFour());</span>
+        }
+<span class="pc bpc" id="L137" title="1 of 2 branches missed.">        if (request.getPaymentMethod() != null) {</span>
+<span class="nc" id="L138">            payment.setPaymentMethod(request.getPaymentMethod());</span>
+        }
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">        if (request.getReferenceId() != null) {</span>
+<span class="nc" id="L141">            payment.setReferenceId(request.getReferenceId());</span>
+        }
+
+<span class="fc" id="L144">        Payment updatedPayment = paymentRepository.save(payment);</span>
+
+<span class="fc" id="L146">        log.info(&quot;Payment updated successfully&quot;,</span>
+<span class="fc" id="L147">                kv(&quot;paymentId&quot;, updatedPayment.getId()),</span>
+<span class="fc" id="L148">                kv(&quot;status&quot;, updatedPayment.getStatus()));</span>
+
+<span class="fc" id="L150">        return PaymentResponse.fromPayment(updatedPayment);</span>
+    }
+
+    public PaymentResponse processPayment(UUID id) {
+<span class="fc" id="L154">        log.info(&quot;Processing payment&quot;, kv(&quot;paymentId&quot;, id));</span>
+
+<span class="fc" id="L156">        return paymentProcessingTimer.record(() -&gt; {</span>
+<span class="fc" id="L157">            Payment payment = paymentRepository.findById(id)</span>
+<span class="pc" id="L158">                    .orElseThrow(() -&gt; new PaymentException.PaymentNotFoundException(id));</span>
+
+<span class="pc bpc" id="L160" title="1 of 2 branches missed.">            if (payment.getStatus() != Payment.PaymentStatus.PENDING) {</span>
+<span class="nc" id="L161">                throw new PaymentException.InvalidPaymentStateException(id, payment.getStatus(), Payment.PaymentStatus.PENDING);</span>
+            }
+
+<span class="fc" id="L164">            payment.setStatus(Payment.PaymentStatus.PROCESSING);</span>
+<span class="fc" id="L165">            paymentRepository.save(payment);</span>
+
+            try {
+                // Simulate payment processing
+<span class="fc" id="L169">                simulatePaymentProcessing(payment);</span>
+
+<span class="fc" id="L171">                payment.setStatus(Payment.PaymentStatus.COMPLETED);</span>
+<span class="fc" id="L172">                payment.setProcessedAt(Instant.now());</span>
+<span class="fc" id="L173">                paymentsProcessedSuccessCounter.increment();</span>
+
+<span class="fc" id="L175">                log.info(&quot;Payment processed successfully&quot;,</span>
+<span class="fc" id="L176">                        kv(&quot;paymentId&quot;, payment.getId()),</span>
+<span class="fc" id="L177">                        kv(&quot;status&quot;, payment.getStatus()));</span>
+
+<span class="nc" id="L179">            } catch (Exception e) {</span>
+<span class="nc" id="L180">                payment.setStatus(Payment.PaymentStatus.FAILED);</span>
+<span class="nc" id="L181">                paymentsProcessedFailureCounter.increment();</span>
+
+<span class="nc" id="L183">                log.error(&quot;Payment processing failed&quot;,</span>
+<span class="nc" id="L184">                        kv(&quot;paymentId&quot;, payment.getId()),</span>
+<span class="nc" id="L185">                        kv(&quot;error&quot;, e.getMessage()));</span>
+<span class="fc" id="L186">            }</span>
+
+<span class="fc" id="L188">            return PaymentResponse.fromPayment(paymentRepository.save(payment));</span>
+        });
+    }
+
+    public void cancelPayment(UUID id) {
+<span class="fc" id="L193">        log.info(&quot;Cancelling payment&quot;, kv(&quot;paymentId&quot;, id));</span>
+
+<span class="fc" id="L195">        Payment payment = paymentRepository.findById(id)</span>
+<span class="pc" id="L196">                .orElseThrow(() -&gt; new PaymentException.PaymentNotFoundException(id));</span>
+
+<span class="fc bfc" id="L198" title="All 2 branches covered.">        if (payment.getStatus() == Payment.PaymentStatus.COMPLETED ||</span>
+<span class="pc bpc" id="L199" title="1 of 2 branches missed.">                payment.getStatus() == Payment.PaymentStatus.REFUNDED) {</span>
+<span class="fc" id="L200">            throw new PaymentException.PaymentNotModifiableException(id, payment.getStatus());</span>
+        }
+
+<span class="fc" id="L203">        payment.setStatus(Payment.PaymentStatus.CANCELLED);</span>
+<span class="fc" id="L204">        paymentRepository.save(payment);</span>
+
+<span class="fc" id="L206">        log.info(&quot;Payment cancelled successfully&quot;, kv(&quot;paymentId&quot;, id));</span>
+<span class="fc" id="L207">    }</span>
+
+    public PaymentResponse refundPayment(UUID id) {
+<span class="fc" id="L210">        log.info(&quot;Processing refund&quot;, kv(&quot;paymentId&quot;, id));</span>
+
+<span class="fc" id="L212">        Payment payment = paymentRepository.findById(id)</span>
+<span class="pc" id="L213">                .orElseThrow(() -&gt; new PaymentException.PaymentNotFoundException(id));</span>
+
+<span class="fc bfc" id="L215" title="All 2 branches covered.">        if (payment.getStatus() != Payment.PaymentStatus.COMPLETED) {</span>
+<span class="fc" id="L216">            throw new PaymentException.InvalidPaymentStateException(id, payment.getStatus(), Payment.PaymentStatus.COMPLETED);</span>
+        }
+
+<span class="fc" id="L219">        payment.setStatus(Payment.PaymentStatus.REFUNDED);</span>
+<span class="fc" id="L220">        Payment refundedPayment = paymentRepository.save(payment);</span>
+
+<span class="fc" id="L222">        log.info(&quot;Refund processed successfully&quot;,</span>
+<span class="fc" id="L223">                kv(&quot;paymentId&quot;, refundedPayment.getId()),</span>
+<span class="fc" id="L224">                kv(&quot;status&quot;, refundedPayment.getStatus()));</span>
+
+<span class="fc" id="L226">        return PaymentResponse.fromPayment(refundedPayment);</span>
+    }
+
+    private void simulatePaymentProcessing(Payment payment) {
+        // In a real implementation, this would integrate with payment processors
+        // For now, we simulate a successful processing
+<span class="fc" id="L232">        log.debug(&quot;Simulating payment processing&quot;,</span>
+<span class="fc" id="L233">                kv(&quot;paymentId&quot;, payment.getId()),</span>
+<span class="fc" id="L234">                kv(&quot;amount&quot;, payment.getAmount()));</span>
+<span class="fc" id="L235">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

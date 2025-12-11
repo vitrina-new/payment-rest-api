@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="cancelPayment" tests="2" skipped="0" failures="0" errors="0" timestamp="2025-12-11T13:49:16" hostname="Rickeys-MacBook-Pro.local" time="0.006">
+  <properties/>
+  <testcase name="should cancel pending payment" classname="com.example.payments.service.PaymentServiceTest$CancelPayment" time="0.004"/>
+  <testcase name="should throw exception when cancelling completed payment" classname="com.example.payments.service.PaymentServiceTest$CancelPayment" time="0.001"/>
+  <system-out><![CDATA[2025-12-11 08:49:16.450 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Cancelling payment
+2025-12-11 08:49:16.450 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Payment cancelled successfully
+2025-12-11 08:49:16.454 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Cancelling payment
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

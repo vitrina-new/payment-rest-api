@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Payment.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">payments-service</a> &gt; <a href="index.source.html" class="el_package">com.example.payments.model</a> &gt; <span class="el_source">Payment.java</span></div><h1>Payment.java</h1><pre class="source lang-java linenums">package com.example.payments.model;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.UUID;
+
+@Entity
+@Table(name = &quot;payments&quot;)
+<span class="pc bnc" id="L15" title="All 110 branches missed.">@Data</span>
+<span class="pc" id="L16">@Builder</span>
+<span class="fc" id="L17">@NoArgsConstructor</span>
+<span class="fc" id="L18">@AllArgsConstructor</span>
+public class Payment {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+<span class="fc" id="L23">    private UUID id;</span>
+
+    @Column(nullable = false)
+<span class="fc" id="L26">    private BigDecimal amount;</span>
+
+    @Column(nullable = false, length = 3)
+<span class="fc" id="L29">    private String currency;</span>
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+<span class="fc" id="L33">    private PaymentStatus status;</span>
+
+    @Column(length = 500)
+<span class="fc" id="L36">    private String description;</span>
+
+    @Column(nullable = false)
+<span class="fc" id="L39">    private String merchantId;</span>
+
+    @Column(nullable = false)
+<span class="fc" id="L42">    private String customerId;</span>
+
+    @Column(length = 4)
+<span class="fc" id="L45">    private String cardLastFour;</span>
+
+    @Column
+<span class="fc" id="L48">    private String paymentMethod;</span>
+
+    @Column
+<span class="fc" id="L51">    private String referenceId;</span>
+
+    @Column(nullable = false)
+<span class="fc" id="L54">    private Instant createdAt;</span>
+
+    @Column
+<span class="fc" id="L57">    private Instant updatedAt;</span>
+
+    @Column
+<span class="fc" id="L60">    private Instant processedAt;</span>
+
+    @PrePersist
+    protected void onCreate() {
+<span class="fc" id="L64">        createdAt = Instant.now();</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        if (status == null) {</span>
+<span class="nc" id="L66">            status = PaymentStatus.PENDING;</span>
+        }
+<span class="fc" id="L68">    }</span>
+
+    @PreUpdate
+    protected void onUpdate() {
+<span class="fc" id="L72">        updatedAt = Instant.now();</span>
+<span class="fc" id="L73">    }</span>
+
+<span class="fc" id="L75">    public enum PaymentStatus {</span>
+<span class="fc" id="L76">        PENDING,</span>
+<span class="fc" id="L77">        PROCESSING,</span>
+<span class="fc" id="L78">        COMPLETED,</span>
+<span class="fc" id="L79">        FAILED,</span>
+<span class="fc" id="L80">        CANCELLED,</span>
+<span class="fc" id="L81">        REFUNDED</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

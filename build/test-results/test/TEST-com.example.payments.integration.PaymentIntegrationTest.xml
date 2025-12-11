@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.payments.integration.PaymentIntegrationTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2025-12-11T13:49:16" hostname="Rickeys-MacBook-Pro.local" time="0.26">
+  <properties/>
+  <testcase name="should handle payment cancellation" classname="com.example.payments.integration.PaymentIntegrationTest" time="0.183"/>
+  <testcase name="health endpoint should be accessible" classname="com.example.payments.integration.PaymentIntegrationTest" time="0.017"/>
+  <testcase name="should complete full payment lifecycle" classname="com.example.payments.integration.PaymentIntegrationTest" time="0.015"/>
+  <testcase name="should update payment" classname="com.example.payments.integration.PaymentIntegrationTest" time="0.009"/>
+  <testcase name="should list payments with pagination" classname="com.example.payments.integration.PaymentIntegrationTest" time="0.034"/>
+  <system-out><![CDATA[2025-12-11 08:49:13.687 ?[34mINFO ?[0;39m [Test worker] ?[36mo.s.t.c.s.AnnotationConfigContextLoaderUtils?[0;39m - Could not detect default configuration classes for test class [com.example.payments.integration.PaymentIntegrationTest]: PaymentIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-12-11 08:49:13.692 ?[34mINFO ?[0;39m [Test worker] ?[36mo.s.b.t.c.SpringBootTestContextBootstrapper?[0;39m - Found @SpringBootConfiguration com.example.payments.PaymentsApplication for test class com.example.payments.integration.PaymentIntegrationTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.1)
+
+2025-12-11 08:49:13.716 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.p.i.PaymentIntegrationTest?[0;39m - Starting PaymentIntegrationTest using Java 21.0.9 with PID 9248 (started by rickeyzachary in /Users/rickeyzachary/Workspace/payment-rest-api)
+2025-12-11 08:49:13.716 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.p.i.PaymentIntegrationTest?[0;39m - The following 1 profile is active: "test"
+2025-12-11 08:49:14.745 ?[31mWARN ?[0;39m [Test worker] ?[36morg.hibernate.orm.deprecation?[0;39m - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-12-11 08:49:15.566 ?[31mWARN ?[0;39m [Test worker] ?[36mo.s.b.a.s.s.UserDetailsServiceAutoConfiguration?[0;39m - 
+
+Using generated security password: ab462c95-b171-49fe-9b86-73d33f4a553a
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2025-12-11 08:49:16.071 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.p.i.PaymentIntegrationTest?[0;39m - Started PaymentIntegrationTest in 2.377 seconds (process running for 10.032)
+2025-12-11 08:49:16.215 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Creating payment
+2025-12-11 08:49:16.223 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Payment created successfully
+2025-12-11 08:49:16.246 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Cancelling payment
+2025-12-11 08:49:16.253 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Payment cancelled successfully
+2025-12-11 08:49:16.311 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Creating payment
+2025-12-11 08:49:16.311 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Payment created successfully
+2025-12-11 08:49:16.316 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Processing payment
+2025-12-11 08:49:16.317 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Payment processed successfully
+2025-12-11 08:49:16.320 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Processing refund
+2025-12-11 08:49:16.320 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Refund processed successfully
+2025-12-11 08:49:16.327 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Creating payment
+2025-12-11 08:49:16.327 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Payment created successfully
+2025-12-11 08:49:16.330 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Updating payment
+2025-12-11 08:49:16.331 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Payment updated successfully
+2025-12-11 08:49:16.337 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Creating payment
+2025-12-11 08:49:16.337 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Payment created successfully
+2025-12-11 08:49:16.340 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Creating payment
+2025-12-11 08:49:16.340 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Payment created successfully
+2025-12-11 08:49:16.342 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Creating payment
+2025-12-11 08:49:16.342 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Payment created successfully
+2025-12-11 08:49:16.344 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Creating payment
+2025-12-11 08:49:16.344 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Payment created successfully
+2025-12-11 08:49:16.346 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Creating payment
+2025-12-11 08:49:16.347 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Payment created successfully
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

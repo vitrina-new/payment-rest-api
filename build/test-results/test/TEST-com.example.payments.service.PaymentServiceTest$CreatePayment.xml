@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="createPayment" tests="2" skipped="0" failures="0" errors="0" timestamp="2025-12-11T13:49:16" hostname="Rickeys-MacBook-Pro.local" time="0.005">
+  <properties/>
+  <testcase name="should increment created counter" classname="com.example.payments.service.PaymentServiceTest$CreatePayment" time="0.002"/>
+  <testcase name="should create payment successfully" classname="com.example.payments.service.PaymentServiceTest$CreatePayment" time="0.003"/>
+  <system-out><![CDATA[2025-12-11 08:49:16.458 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Creating payment
+2025-12-11 08:49:16.458 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Payment created successfully
+2025-12-11 08:49:16.461 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Creating payment
+2025-12-11 08:49:16.461 ?[34mINFO ?[0;39m [Test worker] ?[36mc.e.payments.service.PaymentService?[0;39m - Payment created successfully
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

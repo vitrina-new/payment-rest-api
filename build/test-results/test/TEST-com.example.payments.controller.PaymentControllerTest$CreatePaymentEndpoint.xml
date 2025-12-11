@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="POST /api/v1/payments" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-12-11T13:49:13" hostname="Rickeys-MacBook-Pro.local" time="0.103">
+  <properties/>
+  <testcase name="should return 400 when required fields missing" classname="com.example.payments.controller.PaymentControllerTest$CreatePaymentEndpoint" time="0.088"/>
+  <testcase name="should create payment and return 201" classname="com.example.payments.controller.PaymentControllerTest$CreatePaymentEndpoint" time="0.008"/>
+  <testcase name="should return 400 for invalid request" classname="com.example.payments.controller.PaymentControllerTest$CreatePaymentEndpoint" time="0.005"/>
+  <system-out><![CDATA[2025-12-11 08:49:13.576 ?[34mINFO ?[0;39m [Test worker] ?[36mo.s.t.c.s.AnnotationConfigContextLoaderUtils?[0;39m - Could not detect default configuration classes for test class [com.example.payments.controller.PaymentControllerTest$CreatePaymentEndpoint]: CreatePaymentEndpoint does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-12-11 08:49:13.580 ?[34mINFO ?[0;39m [Test worker] ?[36mo.s.b.t.c.SpringBootTestContextBootstrapper?[0;39m - Found @SpringBootConfiguration com.example.payments.PaymentsApplication for test class com.example.payments.controller.PaymentControllerTest$CreatePaymentEndpoint
+2025-12-11 08:49:13.663 ?[31mWARN ?[0;39m [Test worker] ?[36mc.e.p.e.GlobalExceptionHandler?[0;39m - Validation error
+2025-12-11 08:49:13.683 ?[31mWARN ?[0;39m [Test worker] ?[36mc.e.p.e.GlobalExceptionHandler?[0;39m - Validation error
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
